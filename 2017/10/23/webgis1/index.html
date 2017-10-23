@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="author" content="zhengliang"><title>WebGIS中通过行列号来换算出多种瓦片的URL 之离线地图 · aliea个人博客</title><meta name="description" content="WebGIS中通过行列号来换算出多种瓦片的URL 之离线地图"><meta name="keywords" content="Java,HTML,CSS,android,Linux"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><link rel="short icon" href="/images/favicon.png" type="image/x-icon"><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/blog_basic.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml"></head><body><div class="sidebar animated fadeInDown"><div class="logo-title"><div class="title"><img src="/images/logo@2x.png" style="width:127px;"><h3 title=""><a href="/">aliea个人博客</a></h3><div class="description"><p>点滴记录 , 积少成多 .</p></div></div></div><ul class="social-links"><li><a href="https://twitter.com/mraliea"><i class="fa fa-twitter"></i></a></li><li><a href="http://weibo.com/mraliea"><i class="fa fa-weibo"></i></a></li><li><a href="http://facebook.com/mraliea"><i class="fa fa-facebook"></i></a></li><li><a href="http://github.com/mraliea"><i class="fa fa-github"></i></a></li></ul><div class="footer"><a target="_blank" href="/"><span>Designed by </span></a><a href="https://mraliea.github.io"> Zhengliang </a><div class="by_farbox"><a href="https://mraliea.github.io" target="_blank">Proudly published with Hexo&#65281;</a></div></div></div><div class="main"><div class="page-top animated fadeInDown"><div class="nav"><li><a href="/">首页</a></li><li><a href="/about">关于</a></li><li><a href="/archives">归档</a></li><li><a href="/links">友链</a></li></div><div class="information"><div class="back_btn"><li><a onclick="window.history.go(-1)" class="fa fa-chevron-left"> </a></li></div><div class="avatar"><img src="/images/favicon.png"></div></div></div><div class="autopagerize_page_element"><div class="content"><div class="post-page"><div class="post animated fadeInDown"><div class="post-title"><h3><a>WebGIS中通过行列号来换算出多种瓦片的URL 之离线地图</a></h3></div><div class="post-content"><h5 id="1-前言"><a href="#1-前言" class="headerlink" title="1.前言"></a>1.前言</h5><p>在前面我花了两个篇幅来讲解行列号的获取，也解释了为什么要获取行列号。在这一章，我将把常见的几种请求瓦片时的URL样式罗列出来，并且给出大致的解释。</p>
 <p>我在这里将地图分为离线地图和在线地图。所谓离线地图，即保存在本地而没有发布的地图。在线地图即发布与网上，可以通过浏览器访问的地图。</p>
-<h5 id="2-ArcGIS切图——exploded类型"><a href="#2-ArcGIS切图——exploded类型" class="headerlink" title="2.ArcGIS切图——exploded类型"></a>2.ArcGIS切图——exploded类型</h5><p>在前面章节中我已经贴出了exploded类型的切图图片，这里再次给出。!</p>
-<p><a href="https://mraliea.github.io/images/content/webgis1-01.jpg" target="_blank" rel="external">webgis1-01</a></p>
+<h5 id="2-ArcGIS切图——exploded类型"><a href="#2-ArcGIS切图——exploded类型" class="headerlink" title="2.ArcGIS切图——exploded类型"></a>2.ArcGIS切图——exploded类型</h5><p>在前面章节中我已经贴出了exploded类型的切图图片，这里再次给出。</p>
+<p><img src="https://mraliea.github.io/images/content/webgis1-01.jpg" alt="webgis1-01"></p>
 <p>那么如何通过行列号来换算出此瓦片的URL呢。我们首先可以通过观察得出三个结论：</p>
 <p>（1）L开头的代表了Level，R开头的代表了row，C开头的代表了Col。</p>
 <p>（2）确定这个后，我们再继续观察，可以发现L后的数字是两位字符串，R后的是八位字符串，C后的也是八位字符串。</p>
@@ -16,12 +16,12 @@
 <p>（3）R、C后的数字是通过行列号除以128后再转成16进制，然后将不足的位数补零。</p>
 <p>（4）Bundle文件中存放的是图片二进制流，BundleX文件中存放的是对应瓦片在Bundle中的地址，是一个索引文件。</p>
 <p>（5）然后…..</p>
-<p>然后就是如何在索引文件中找到应该读取的地方，获得瓦片在Bundle中所在的地址后，再去Bundle中的相应地址里读取图片。不过，这里补充一下，Bundle中也不是只有瓦片的，它里面还包含了每个瓦片的大小，也就是你读这个瓦片需要读取多少个二进制的数目。!</p>
-<p><a href="https://mraliea.github.io/images/content/webgis1-03.png" target="_blank" rel="external">webgis1-03</a></p>
+<p>然后就是如何在索引文件中找到应该读取的地方，获得瓦片在Bundle中所在的地址后，再去Bundle中的相应地址里读取图片。不过，这里补充一下，Bundle中也不是只有瓦片的，它里面还包含了每个瓦片的大小，也就是你读这个瓦片需要读取多少个二进制的数目。</p>
+<p><img src="https://mraliea.github.io/images/content/webgis1-03.png" alt="webgis1-03"></p>
 <p>这里再次感谢我的同事的智慧的结晶，否则这篇文章一定是不完整的。</p>
 <h5 id="4-非常见瓦片格式——国土局的瓦片"><a href="#4-非常见瓦片格式——国土局的瓦片" class="headerlink" title="4.非常见瓦片格式——国土局的瓦片"></a>4.非常见瓦片格式——国土局的瓦片</h5><p>在我们项目中经常可以见到非ArcGIS的瓦片系列，比如超图的、中地的等等。这里我给出某国土局的瓦片格式，其实目前很多国土局自己的瓦片均是这个组织格式。</p>
 <p>同样我先给出瓦片的样式图：!</p>
-<p><a href="https://mraliea.github.io/images/content/webgis1-04.png" target="_blank" rel="external">webgis1-04</a></p>
+<p><img src="https://mraliea.github.io/images/content/webgis1-04.png" alt="webgis1-04"></p>
 <p>大家是不是很奇怪，明明该是三个层次的呀，Level、Row、Col的呀，怎么这个就有四个层次呢。是的，国土局的瓦片中除了这三个参数外，还有一个FileID参数。</p>
 <p>这里我直接给出换算公式：</p>
 <p>FixedLevel=Level;</p>
